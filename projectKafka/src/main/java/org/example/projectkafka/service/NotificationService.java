@@ -1,30 +1,32 @@
 package org.example.projectkafka.service;
 
 import org.example.projectkafka.model.NotificationEvent;
-import org.example.projectkafka.repository.NotificationRepository;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class NotificationService {
 
-    private final NotificationRepository notificationRepository;
+    // Stocke les notifications par parentId
+    private final Map<String, List<NotificationEvent>> notificationStore = new ConcurrentHashMap<>();
 
-    public NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
+    @KafkaListener(topics = "notification-topic", groupId = "notification-storage-group")
+    public void consumeNotification(NotificationEvent event) {
+        System.out.println("🔔 Notification reçue: " + event);
 
-    public void notifyParents(NotificationEvent event) {
-        // sauvegarde en base
-        notificationRepository.save(event);
-
-        // simulation notification
-        System.out.println("NOTIFICATION : " + event.getMessage());
+        notificationStore
+                .computeIfAbsent(event.getParentId(), k -> new ArrayList<>())
+                .add(event);
     }
 
     public List<NotificationEvent> findByParentId(String parentId) {
-        return notificationRepository.findByParentId(parentId);
+        return notificationStore.getOrDefault(parentId, new ArrayList<>());
+    }
+
+    public void clearNotifications(String parentId) {
+        notificationStore.remove(parentId);
     }
 }
-

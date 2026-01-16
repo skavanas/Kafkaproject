@@ -10,17 +10,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class BusLocationStore {
 
-    private final Map<String, BusLocation> busLocations = new ConcurrentHashMap<>();
+    private final Map<String, BusLocation> locations = new ConcurrentHashMap<>();
 
-    public void save(BusLocation location) {
-        busLocations.put(location.getBusId(), location);
+    // Ajoute/met à jour une position
+    public void update(BusLocation location) {
+        locations.put(location.getBusId(), location);
     }
 
+    // Récupère tous les bus
     public Collection<BusLocation> findAll() {
-        return busLocations.values();
+        return locations.values();
     }
 
+    // Récupère un bus par ID
     public BusLocation findByBusId(String busId) {
-        return busLocations.get(busId);
+        return locations.get(busId);
     }
 }

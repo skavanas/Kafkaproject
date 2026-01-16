@@ -20,7 +20,7 @@ public class BusController {
         this.store = store;
     }
 
-    // 1️⃣ ENVOYER UNE POSITION GPS (simulateur GPS)
+    //  POSITION GPS (simulateur GPS)
     @PostMapping("/location")
     public String sendLocation(@RequestBody BusLocation location) {
         location.setTimestamp(LocalDateTime.now());
@@ -28,13 +28,13 @@ public class BusController {
         return "Location sent to Kafka";
     }
 
-    // 2️⃣ VOIR TOUS LES BUS
+    // 2TOUS LES BUS
     @GetMapping
     public Collection<BusLocation> getAllBuses() {
         return store.findAll();
     }
 
-    // 3️⃣ VOIR UN BUS PAR ID
+    //  BUS PAR ID
     @GetMapping("/{busId}")
     public BusLocation getBus(@PathVariable String busId) {
         return store.findByBusId(busId);

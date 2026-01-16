@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationEvent {
+public class NotificationEvent  {
     @Id
     private String parentId;
     private String message;
